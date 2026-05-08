@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "build": "tsc && cp src/*.html dist/ && cp src/*.css dist/ && cp -r src/assets dist/"
+        "build": "tsc && mkdir -p dist && cp src/index.html dist/index.html && cp src/style.css dist/style.css && cp -r src/assets dist/assets"
     },
     "keywords": [],
     "author": "",
