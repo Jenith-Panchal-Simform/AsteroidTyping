@@ -48,8 +48,7 @@ footer {
     transform-origin: center;
     font-weight: 500;
 }
-.asteroid-span
-{
+.asteroid-span {
     font-weight: bold;
     background-color: black;
 }

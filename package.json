@@ -1,20 +1,20 @@
 {
-  "name": "asteroidtyping",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-      "build": "tsc"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "module",
-  "dependencies": {
-    "repo-boot": "^0.0.8"
-  },
-  "devDependencies": {
-    "typescript": "^6.0.3"
-  }
+    "name": "asteroidtyping",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "tsc && cp src/*.html dist/ && cp src/*.css dist/ && cp -r src/assets dist/"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "type": "module",
+    "dependencies": {
+        "repo-boot": "^0.0.8"
+    },
+    "devDependencies": {
+        "typescript": "^6.0.3"
+    }
 }
