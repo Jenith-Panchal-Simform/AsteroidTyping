@@ -27,14 +27,16 @@ let randomArray: string[] = [
     "wolf",
 ];
 //asteroid type
-type asteroid = {
-    image: HTMLElement;
-    span: HTMLElement;
-    x: number;
-    y: number;
-    velocityX: number;
-    velocityY: number;
-} | undefined;
+type asteroid =
+    | {
+          image: HTMLElement;
+          span: HTMLElement;
+          x: number;
+          y: number;
+          velocityX: number;
+          velocityY: number;
+      }
+    | undefined;
 //initializations
 let lives = 3;
 let score = 0;
@@ -50,7 +52,7 @@ let asterroidWidth = 50;
 let asteroids: asteroid[] = [];
 
 let inputBox = document.getElementById("input") as HTMLInputElement;
-let resetBtn=document.getElementById("reset") as HTMLButtonElement
+let resetBtn = document.getElementById("reset") as HTMLButtonElement;
 
 let gameBody = document.getElementById("game-body") as HTMLElement;
 if (gameBody instanceof HTMLElement) {
@@ -83,7 +85,6 @@ window.onload = function () {
 };
 let arr: string[] = shuffleArray(randomArray);
 
-
 //start the game
 function startGame() {
     liveContainer.innerText = String(lives);
@@ -95,7 +96,7 @@ function startGame() {
         let asteroidSpan: HTMLSpanElement = document.createElement("span");
         if (asteroidSpan) {
             asteroidSpan.innerText = String(arr[i]);
-            asteroidSpan.classList.add("asteroid-span")
+            asteroidSpan.classList.add("asteroid-span");
         }
         let asteroid: HTMLImageElement = document.createElement("img");
         asteroid.src = "./assets/asteroid.png";
@@ -128,6 +129,10 @@ function randomPosition(limit: number): number {
     return Math.floor(Math.random() * limit) + 1;
 }
 function moveAsteroid() {
+    if(asteroids.length<=0)
+    {
+        resetGame()
+    }
     for (let i = 0; i < asteroids.length; i++) {
         let asteroidContainer = asteroids[i];
         if (asteroidContainer) {
@@ -135,35 +140,31 @@ function moveAsteroid() {
 
             asteroidContainer.image.style.transform = `translate3d(${asteroidContainer.x}px, ${asteroidContainer.y}px, 0)`;
 
-            if ((asteroidContainer.y + asteroidHeight) > gameBodyBottom) {
+            if (asteroidContainer.y + asteroidHeight > gameBodyBottom) {
                 asteroids = asteroids.filter(
                     (item) => item !== asteroidContainer,
                 );
                 asteroidContainer.image.style.display = "none";
                 lives--;
                 liveContainer.innerText = String(lives);
-                if (lives <= 0 ||  asteroids.length<=0) {
-                    resetGame()
+                if (lives <= 0 || asteroids.length <= 0) {
+                    resetGame();
                 }
             }
         }
     }
 }
-let asteroidFind:asteroid;
+let asteroidFind: asteroid;
 if (inputBox) {
     inputBox.addEventListener("keydown", (e) => {
         const typed = e.key;
-        if(!asteroidFind)
-        {
+        if (!asteroidFind) {
             asteroidFind = asteroids.find((obj) => {
                 const currentText = obj?.span.innerText[0];
-                if (typed == currentText)
-                return obj;
+                if (typed == currentText) return obj;
             }) as asteroid;
         }
-        if(asteroidFind)
-        {
-
+        if (asteroidFind) {
             const currentText = asteroidFind?.span.innerText;
             // Case 1: span starts with typed string
             if (currentText?.startsWith(typed) && typed.length > 0) {
@@ -177,10 +178,8 @@ if (inputBox) {
                 // Remove from DOM
                 asteroidFind.image.remove();
                 // Remove from array
-                asteroids = asteroids.filter(
-                    (item) => item !== asteroidFind,
-                );
-                asteroidFind=undefined;
+                asteroids = asteroids.filter((item) => item !== asteroidFind);
+                asteroidFind = undefined;
                 //increase Score
                 score++;
                 scoreContainer.innerText = String(score);
@@ -197,19 +196,24 @@ function processStrings(str1: string, str2: string) {
     return str2;
 }
 
-
 //reset handler
-function resetGame()
-{
-    let el=confirm("Your score is:"+score+" Do You want to paly again?");
-    score=0;
-    scoreContainer.innerText=String(0);
+let called = false;
+async function resetGame() {
+    if (called) {
+        return;
+    }
+    called  =true
+    let gameOver = new Audio("./assets/gameover.mp3");
+    gameOver.play();
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+    let el = confirm("Your score is: " + score + " Do You want to paly again?");
+    score = 0;
+    scoreContainer.innerText = String(0);
 
-    lives=0
-    liveContainer.innerText=String(0)
-    if(el)
-    {
-        location.reload()
+    lives = 0;
+    liveContainer.innerText = String(0);
+    if (el) {
+        location.reload();
     }
 }
-resetBtn.addEventListener("click",resetGame)
+resetBtn.addEventListener("click", resetGame);
