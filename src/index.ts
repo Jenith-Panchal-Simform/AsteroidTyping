@@ -25,12 +25,29 @@ let randomArray: string[] = [
     "mine",
     "wolf",
 ];
-let gameBodyHeight: number;
+type asteroid = {
+    image: HTMLElement;
+    x: number;
+    y: number;
+    velocityX: number;
+    velocityY: number;
+};
+let lives = 3;
+let score = 0;
+let gameBodyTop: number;
 let gameBodyWidth: number;
+let gameBodyBottom: number;
+let liveContainer: HTMLElement = document.getElementById(
+    "lives",
+) as HTMLElement;
+let scoreContainer: HTMLElement = document.getElementById(
+    "score",
+) as HTMLElement;
 let gameBody: HTMLElement = document.getElementById("game-body") as HTMLElement;
 if (gameBody instanceof HTMLElement) {
-    gameBodyHeight = gameBody.offsetHeight;
+    gameBodyTop = gameBody.offsetTop;
     gameBodyWidth = gameBody.offsetWidth;
+    gameBodyBottom = gameBodyTop + gameBody.offsetHeight;
 }
 function shuffleArray(arr: string[]): string[] {
     let random;
@@ -48,16 +65,17 @@ function shuffleArray(arr: string[]): string[] {
 }
 let asteroidHeight = 50;
 let asterroidWidth = 50;
-let asteroidVelocityX = 5;
-let asteroidVelocityY = -1;
+let asteroids: asteroid[] = [];
 window.onload = function () {
     startGame();
+    setInterval(() => {
+        moveAsteroid();
+    }, 1000 / 60);
 };
 function startGame() {
-
+    liveContainer.innerText = String(lives);
+    scoreContainer.innerText = String(score);
     let arr: string[] = shuffleArray(randomArray);
-    console.log(arr[0], arr[1], arr[2], arr[3]);
-    let asteroids = [];
     //drop images from Top
     for (let i = 0; i < 4; i++) {
         //<img id="arr[0]" src="image">
@@ -65,21 +83,42 @@ function startGame() {
         asteroid.src = "./assets/asteroid.png";
         asteroid.height = asteroidHeight;
         asteroid.width = asterroidWidth;
-        asteroid.id = arr[i] ?? ""; 
+        asteroid.classList.add("asteroid");
+        asteroid.id = arr[i] ?? "";
         if (gameBody) {
             gameBody.appendChild(asteroid);
         }
         let asteroidObj = {
             image: asteroid,
             x: randomPosition(gameBodyWidth - asterroidWidth),
-            y: 0,
-            velocityX: asteroidVelocityX,
-            velocityY: asteroidVelocityY,
+            y: gameBodyTop,
+            velocityX: randomPosition(2),
+            velocityY: randomPosition(1),
         };
         asteroids.push(asteroidObj);
-        console.log("asteroidOBj", asteroidObj);
     }
 }
 function randomPosition(limit: number): number {
-    return Math.floor(Math.random() * limit);
+    return Math.floor(Math.random() * limit) + 1;
+}
+function moveAsteroid() {
+    for (let i = 0; i < asteroids.length; i++) {
+        let asteroid = asteroids[i];
+        if (asteroid) {
+            asteroid.x = asteroid.x;
+            asteroid.y += asteroid.velocityY;
+            asteroid.image.style.transform = `translate3d(${asteroid.x}px, ${asteroid.y}px, 0)`;
+
+            if (asteroid.y > gameBodyBottom) {
+                asteroid.image.style.display = "none";
+                if (lives <= 0) {
+                    // console.log("hello")
+                    // alert("Your score:",score)
+                    // resetGame()
+                }
+                lives--;
+                liveContainer.innerText = String(lives);
+            }
+        }
+    }
 }
