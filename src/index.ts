@@ -177,6 +177,7 @@ if (inputBox) {
         inputBox.value=""
       }
     });
+
   })
 }
 function processStrings(str1:string, str2:string) {
